@@ -9,7 +9,12 @@ products = [
     {'name': 'Kuchenka mikrofalowa SAMSUNG MC28A5135CK', 'price': 999.00}
 ]
 
-def pair_products_with_discount(products):
+promotion = {
+    'products': ['Pralka SAMSUNG WW90CGC04DAB AI Energy Mode EcoBubble 9kg 1400 obr', 'Suszarka SAMSUNG AI DV90CGC2A0AB'],
+    'bonus': 299.99
+}
+
+def pair_products_with_discount(products, promotion):
     # Sortuj produkty według ceny
     sorted_products = sorted(products, key=lambda x: x['price'])
 
@@ -19,14 +24,18 @@ def pair_products_with_discount(products):
     # Dodaj 30% zniżki do tańszego produktu w parze
     discounted_pairs = []
     for pair in paired_products:
+        bonus = 0
+        if set(promotion['products']) == set([pair[0]['name'], pair[1]['name']]):
+            bonus = promotion['bonus']
         if pair[0]['price'] > pair[1]['price']:
-            discounted_pairs.append((pair[0], {'name': pair[1]['name'], 'price': pair[1]['price'] * 0.7, 'original_price': pair[1]['price']}))
+            discounted_pairs.append((pair[0], {'name': pair[1]['name'], 'price': round(pair[1]['price'] * 0.7, 2), 'original_price': pair[1]['price'], 'bonus': bonus}))
         else:
-            discounted_pairs.append(({'name': pair[0]['name'], 'price': pair[0]['price'] * 0.7, 'original_price': pair[0]['price']}, pair[1]))
+            discounted_pairs.append(({'name': pair[0]['name'], 'price': round(pair[0]['price'] * 0.7, 2), 'original_price': pair[0]['price'], 'bonus': bonus}, pair[1]))
 
     return discounted_pairs
     
-discounted_pairs = pair_products_with_discount(products)
+    
+discounted_pairs = pair_products_with_discount(products, promotion)
 
 for pair in discounted_pairs:
     print(f"Zestaw: {pair[0]['name']} + {pair[1]['name']}")
